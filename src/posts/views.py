@@ -34,3 +34,16 @@ class UpdatePostView(generics.UpdateAPIView):
 
     def get_queryset(self):
         return Post.objects.filter(is_deleted=False)
+
+class RetrievePostView(generics.RetrieveAPIView):
+    serializer_class = PostSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        return (
+            Post.objects
+            .filter(is_deleted=False)
+            .select_related("author", "original_post")
+            .prefetch_related("media")
+        )
+

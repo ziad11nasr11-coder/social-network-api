@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import CreatePostView, PostListView, UpdatePostView
+from .views import CreatePostView, PostListView, UpdatePostView. RetrievePostView
 
 urlpatterns = [
     path(
@@ -17,5 +17,10 @@ urlpatterns = [
         "posts/<uuid:pk>/update/",
         UpdatePostView.as_view(),
         name="update_post",
+    ),
+    path(
+        "posts/<uuid:pk>/",
+        RetrievePostView.as_view(),
+        name="retrieve_post",
     ),
 ]
