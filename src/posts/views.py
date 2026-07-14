@@ -47,3 +47,21 @@ class RetrievePostView(generics.RetrieveAPIView):
             .prefetch_related("media")
         )
 
+class DeletePostView(generics.DestroyAPIView):
+    permission_classes = [IsAuthenticated, IsAuthorOrReadOnly]
+
+    def get_queryset(self):
+        return Post.objects.filter(is_deleted=False)
+
+    def perform_destroy(self, instance):
+        instance.is_deleted = True
+        instance.save(update_fields=["is_deleted"])
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+
+        return Response(
+            {"message": "Post deleted successfully."},
+            status=status.HTTP_200_OK,
+        )

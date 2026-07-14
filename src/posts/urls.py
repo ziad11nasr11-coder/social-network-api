@@ -23,4 +23,10 @@ urlpatterns = [
         RetrievePostView.as_view(),
         name="retrieve_post",
     ),
+    path(
+        "posts/<uuid:pk>/delete/",
+        DeletePostView.as_view(),
+        name="delete_post",
+    ),
+
 ]
