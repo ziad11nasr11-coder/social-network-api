@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import CreatePostView, PostListView, UpdatePostView. RetrievePostView
+from .views import CreatePostView, PostListView, UpdatePostView. RetrievePostView, UploadMediaView
 
 urlpatterns = [
     path(
@@ -28,5 +28,9 @@ urlpatterns = [
         DeletePostView.as_view(),
         name="delete_post",
     ),
-
+    path(
+        "posts/media/",
+        UploadMediaView.as_view(),
+        name="upload_media",
+    ),
 ]

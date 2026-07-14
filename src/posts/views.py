@@ -1,8 +1,8 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import AllowAny
-from .models import Post
-from .serializers import PostSerializer
+from .models import Post, Media
+from .serializers import PostSerializer, MediaSerializer
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsAuthorOrReadOnly
 
@@ -65,3 +65,19 @@ class DeletePostView(generics.DestroyAPIView):
             {"message": "Post deleted successfully."},
             status=status.HTTP_200_OK,
         )
+
+class UploadMediaView(generics.CreateAPIView):
+    serializer_class = MediaSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        post = serializer.validated_data["post"]
+
+        if post.author != self.request.user:
+            from rest_framework.exceptions import PermissionDenied
+
+            raise PermissionDenied(
+                "You do not have permission to upload media to this post."
+            )
+
+        serializer.save()
