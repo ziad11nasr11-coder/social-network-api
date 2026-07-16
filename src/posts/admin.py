@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post, Media
+from .models import Post, Media, Comment
 
 
 class MediaInline(admin.TabularInline):
@@ -28,3 +28,19 @@ class PostAdmin(admin.ModelAdmin):
     @admin.display(description="Deleted", boolean=True)
     def deleted_status(self, obj):
         return obj.is_deleted
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = (
+        "id", "author", "post", "short_content",
+        "is_deleted", "created_at",
+    )
+    list_filter = ("is_deleted", "created_at")
+    search_fields = ("content", "author__username", "post__id")
+    autocomplete_fields = ("author", "post")
+    ordering = ("-created_at",)
+
+    @admin.display(description="Content")
+    def short_content(self, obj):
+        return obj.content[:50] + ("..." if len(obj.content) > 50 else "")
