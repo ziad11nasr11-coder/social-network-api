@@ -2,7 +2,7 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import AllowAny
 from .models import Post, Media
-from .serializers import PostSerializer, MediaSerializer
+from .serializers import PostSerializer, MediaSerializer, CommentSerializer
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsAuthorOrReadOnly
 
@@ -81,3 +81,16 @@ class UploadMediaView(generics.CreateAPIView):
             )
 
         serializer.save()
+
+class CreateCommentView(generics.CreateAPIView):
+    serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        comment = serializer.save(
+            author=self.request.user
+        )
+
+        post = comment.post
+        post.comments_count += 1
+        post.save(update_fields=["comments_count"])
