@@ -94,3 +94,17 @@ class CreateCommentView(generics.CreateAPIView):
         post = comment.post
         post.comments_count += 1
         post.save(update_fields=["comments_count"])
+
+class CommentListView(generics.ListAPIView):
+    serializer_class = CommentSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+    return (
+        Comment.objects
+        .filter(
+            post_id=self.kwargs["post_id"],
+            is_deleted=False,
+        )
+        .select_related("author")
+    )
