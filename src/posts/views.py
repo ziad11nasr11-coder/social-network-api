@@ -108,3 +108,14 @@ class CommentListView(generics.ListAPIView):
         )
         .select_related("author")
     )
+
+class RetrieveCommentView(generics.RetrieveAPIView):
+    serializer_class = CommentSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        return (
+            Comment.objects
+            .filter(is_deleted=False)
+            .select_related("author", "post")
+        )

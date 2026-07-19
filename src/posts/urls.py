@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import CreatePostView, PostListView, UpdatePostView. RetrievePostView, UploadMediaView, CreateCommentView, CommentListView
+from .views import CreatePostView, PostListView, UpdatePostView. RetrievePostView, UploadMediaView, CreateCommentView, CommentListView, RetrieveCommentView
 
 urlpatterns = [
     path(
@@ -42,5 +42,10 @@ urlpatterns = [
         "comments/",
         CreateCommentView.as_view(),
         name="create_comment",
+    ),
+    path(
+        "comments/<uuid:pk>/",
+        RetrieveCommentView.as_view(),
+        name="retrieve_comment",
     ),
 ]
